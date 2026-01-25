@@ -32,47 +32,70 @@ Allowed Inbound Traffic: HTTP (80), HTTPS (443), SSH (22), Custom TCP (3000).
 Connect to Server:
 
 Bash
+
 ssh -i "your-key.pem" ubuntu@<PUBLIC-IP>
+
 Update System & Install Node.js:
 
 Bash
+
 sudo apt update
+
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-sudo apt install -y nodejs
+
+sudo apt install -y nodejs npm  git
+
 Install Nginx (Web Server):
 
 Bash
+
 sudo apt install nginx -y
+
 sudo systemctl start nginx
+
 sudo systemctl enable nginx
+
 Phase 2: Application Deployment
 Clone Repository:
 
 Bash
+
 git clone https://github.com/mayurmahi/node-devops-project.git
+
 cd node-devops-project
+
 Install Dependencies:
 
 Bash
+
 npm install
+
 Start Application with PM2:
 
 Bash
+
 sudo npm install -g pm2
-pm2 start app.js
+
+pm2 start index.js
+
 pm2 save
+
 pm2 startup
+
 Phase 3: Reverse Proxy & Domain Setup
 Configure Nginx: Edited the default configuration file to forward traffic from Port 80 to Port 3000.
 
 Bash
+
 sudo nano /etc/nginx/sites-available/default
 Configuration Added:
 
 Nginx
+
 server_name mayur-mahi-project.duckdns.org;
 
 location / {
+
     proxy_pass http://localhost:3000;
     proxy_http_version 1.1;
     proxy_set_header Upgrade $http_upgrade;
@@ -80,19 +103,27 @@ location / {
     proxy_set_header Host $host;
     proxy_cache_bypass $http_upgrade;
 }
+
 Restart Nginx:
 
 Bash
+
 sudo systemctl restart nginx
+
 Phase 4: Security (SSL/HTTPS)
+
 Install Certbot:
 
 Bash
+
 sudo apt install certbot python3-certbot-nginx -y
+
 Generate SSL Certificate:
 
 Bash
+
 sudo certbot --nginx
+
 Result: Automated redirect from HTTP to HTTPS enabled.
 
 Phase 5: CI/CD Automation
@@ -156,17 +187,23 @@ Action:
 Open your terminal and connect using the NEW IP:
 
 Bash
+
 ssh -i "your-key.pem" ubuntu@NEW-IP-ADDRESS
+
 Check if the app is running:
 
 Bash
+
 pm2 list
 Scenario A (It shows "online"): You are good to go! ✅
 
 Scenario B (List is empty or "stopped"): Run these commands:
 
 Bash
+
 cd node-devops-project
+
 pm2 start app.js
+
 Step 5: Final Check
 Open your browser and visit: https://mayur-mahi-project.duckdns.org If the dashboard loads, the system is fully operational. 🚀
