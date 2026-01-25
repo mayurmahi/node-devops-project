@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevOps Project | Mayur Mahindrakar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-card">
+            <div style="margin-bottom: 20px;">
+                <span id="status-dot" class="status-dot"></span> 
+                <span id="status-text" style="color: var(--primary); font-weight: bold;">INITIALIZING...</span>
+            </div>
+            
+            <h1>Project CloudGuard</h1>
+            <p class="subtitle">Secure CI/CD Deployment Architecture</p>
+
+            <div class="grid">
+                <div class="stat-box">
+                    <span class="icon">☁️</span>
+                    <span class="label">Cloud Provider</span>
+                    <span class="value">AWS EC2</span>
+                </div>
+                <div class="stat-box">
+                    <span class="icon">🔒</span>
+                    <span class="label">Security</span>
+                    <span class="value">SSL / HTTPS</span>
+                </div>
+                <div class="stat-box">
+                    <span class="icon">🚀</span>
+                    <span class="label">Pipeline</span>
+                    <span class="value">GitHub Actions</span>
+                </div>
+                <div class="stat-box">
+                    <span class="icon">⏱️</span>
+                    <span class="label">Uptime</span>
+                    <span class="value" id="uptime">0s</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                Developed by <strong>Mayur Mahindrakar</strong> | Final Year Project 2026<br>
+                <span id="last-updated">Last Updated: Just now</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
