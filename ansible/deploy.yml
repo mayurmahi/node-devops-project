@@ -1,0 +1,50 @@
+---
+- name: Deploy Node.js App with Docker
+  hosts: ec2_servers
+  become: yes
+
+  tasks:
+    - name: Pull latest code
+      git:
+        repo: https://github.com/mayurmahi/node-devops-project.git
+        dest: /home/ubuntu/node-devops-project
+        version: main
+        force: yes
+      become_user: ubuntu
+
+    - name: Stop old container
+      command: docker stop node-devops-app
+      ignore_errors: yes
+
+    - name: Remove old container
+      command: docker rm node-devops-app
+      ignore_errors: yes
+
+    - name: Build Docker image
+      command: docker build -t node-devops-app .
+      args:
+        chdir: /home/ubuntu/node-devops-project
+
+    - name: Run Docker container
+      command: >
+        docker run -d
+        --name node-devops-app
+        -p 3000:3000
+        --restart always
+        -e INSTANCE_ID="{{ instance_id }}"
+        node-devops-app
+
+    - name: Wait 5 seconds
+      pause:
+        seconds: 5
+
+    - name: Health check
+      uri:
+        url: http://localhost:3000/health
+        status_code: 200
+      register: result
+
+    - name: Success message
+      debug:
+        msg: "✅ {{ instance_id }} — DEPLOY SUCCESS"
+      when: result.status == 200
