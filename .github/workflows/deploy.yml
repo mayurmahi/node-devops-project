@@ -1,25 +1,41 @@
-name: Deploy to EC2
+name: Deploy to Both EC2 Instances
+
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
 
-    - name: Deploy via SSH
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST_IP }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          cd node-devops-project
-          git pull origin main
-          npm install --production
-          pm2 restart index.js || pm2 start index.js
-          sleep 5
-          curl -f http://localhost:3000/health && echo " DEPLOY SUCCESS" || echo " DEPLOY FAILED"
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Ansible
+        run: pip install ansible
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/mayur-key.pem
+          chmod 600 ~/.ssh/mayur-key.pem
+          ssh-keyscan -H ${{ secrets.INSTANCE_1_IP }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.INSTANCE_2_IP }} >> ~/.ssh/known_hosts
+
+      - name: Generate Ansible inventory
+        run: |
+          cat > ansible/inventory.ini << EOF
+          [ec2_servers]
+          ${{ secrets.INSTANCE_1_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/mayur-key.pem instance_id="Instance-1 (eu-north-1a)"
+          ${{ secrets.INSTANCE_2_IP }} ansible_user=ubuntu ansible_ssh_private_key_file=~/.ssh/mayur-key.pem instance_id="Instance-2 (eu-north-1b)"
+          EOF
+
+      - name: Run Ansible Deploy
+        run: |
+          ansible-playbook ansible/deploy.yml \
+          -i ansible/inventory.ini \
+          --private-key ~/.ssh/mayur-key.pem
+
+      - name: Deployment Complete
+        run: echo "✅ Deployed to both instances successfully"
