@@ -17,6 +17,7 @@ jobs:
 
       - name: Setup SSH key
         run: |
+          mkdir -p ~/.ssh
           echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > ~/ansible-mayur-key.pem
           chmod 600 ~/ansible-mayur-key.pem
           ssh-keyscan -H ${{ secrets.INSTANCE_1_IP }} >> ~/.ssh/known_hosts
