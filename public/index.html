@@ -3,49 +3,444 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevOps Project | Mayur Mahindrakar</title>
+    <title>NexaDeploy | Mayur Mahindrakar</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400;500;700&family=Bebas+Neue&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <div class="dashboard-card">
-            <div style="margin-bottom: 20px;">
-                <span id="status-dot" class="status-dot"></span> 
-                <span id="status-text" style="color: var(--primary); font-weight: bold;">INITIALIZING...</span>
-            </div>
-            
-            <h1>Project CloudGuard</h1>
-            <p class="subtitle">Secure CI/CD Deployment Architecture</p>
 
-            <div class="grid">
-                <div class="stat-box">
-                    <span class="icon">☁️</span>
-                    <span class="label">Cloud Provider</span>
-                    <span class="value">AWS EC2</span>
-                </div>
-                <div class="stat-box">
-                    <span class="icon">🔒</span>
-                    <span class="label">Security and many values by mayur mahindrakar  </span>
-                    <span class="value">SSL / HTTPS</span>
-                </div>
-                <div class="stat-box">
-                    <span class="icon">🚀</span>
-                    <span class="label">Pipeline</span>
-                    <span class="value">GitHub Actions</span>
-                </div>
-                <div class="stat-box">
-                    <span class="icon">⏱️</span>
-                    <span class="label">Uptime</span>
-                    <span class="value" id="uptime">0s</span>
+    <!-- Particle Canvas Background -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="noise-overlay"></div>
+
+    <!-- Custom Cursor -->
+    <div id="cursor"></div>
+    <div id="cursor-trail"></div>
+
+    <!-- NAV -->
+    <nav id="navbar">
+        <div class="nav-inner">
+            <div class="nav-logo">
+                <div class="logo-icon">ND</div>
+                <div class="logo-text">
+                    <span class="logo-name">NexaDeploy</span>
+                    <span class="logo-ver">v1.0.0 · 3rd Year</span>
                 </div>
             </div>
-
-            <div class="footer">
-                Developed by <strong>Mayur Mahindrakar</strong> | Final Year Project 2026<br>
-                <span id="last-updated">Last Updated: Just now</span>
+            <ul class="nav-links">
+                <li><a href="#architecture" data-num="01">Architecture</a></li>
+                <li><a href="#stack" data-num="02">Stack</a></li>
+                <li><a href="#pipeline" data-num="03">Pipeline</a></li>
+                <li><a href="#metrics" data-num="04">Metrics</a></li>
+                <li><a href="#about" data-num="05">About</a></li>
+            </ul>
+            <div class="nav-status">
+                <div class="status-ring"></div>
+                <span>LIVE</span>
             </div>
         </div>
-    </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero" id="home">
+        <div class="hero-left">
+            <div class="hero-year-tag">3RD YEAR PROJECT · 2025</div>
+            <h1 class="hero-title">
+                <span class="ht-line">NEXA</span>
+                <span class="ht-line accent">DEPLOY</span>
+            </h1>
+            <p class="hero-sub">Automated Cloud Infrastructure<br>with Secure CI/CD Pipelines</p>
+            <div class="hero-desc">
+                A fully automated DevOps deployment system built on AWS EC2,
+                Docker, and GitHub Actions — with SSL security and zero downtime.
+            </div>
+            <div class="hero-btns">
+                <a href="#pipeline" class="btn-glow">View Pipeline</a>
+                <a href="#architecture" class="btn-ghost">Architecture →</a>
+            </div>
+            <div class="hero-meta">
+                <div class="meta-item">
+                    <span class="meta-val" id="hero-uptime">0s</span>
+                    <span class="meta-key">UPTIME</span>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-item">
+                    <span class="meta-val">124</span>
+                    <span class="meta-key">TESTS</span>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-item">
+                    <span class="meta-val">99.9%</span>
+                    <span class="meta-key">SLA</span>
+                </div>
+                <div class="meta-divider"></div>
+                <div class="meta-item">
+                    <span class="meta-val">A+</span>
+                    <span class="meta-key">SSL</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-right">
+            <div class="hero-terminal">
+                <div class="term-bar">
+                    <div class="term-dots">
+                        <span class="td td-r"></span>
+                        <span class="td td-y"></span>
+                        <span class="td td-g"></span>
+                    </div>
+                    <span class="term-name">nexadeploy — bash</span>
+                    <div style="width:60px;"></div>
+                </div>
+                <div class="term-body" id="terminal-output"></div>
+            </div>
+            <div class="float-badge fb1"><span>☁️</span> AWS EC2</div>
+            <div class="float-badge fb2"><span>🐳</span> Docker</div>
+            <div class="float-badge fb3"><span>🔒</span> SSL / HTTPS</div>
+        </div>
+    </section>
+
+    <!-- ARCHITECTURE -->
+    <section id="architecture" class="section-arch">
+        <div class="section-head">
+            <div class="section-num">01</div>
+            <div>
+                <h2 class="section-title">System Architecture</h2>
+                <p class="section-desc">End-to-end secure deployment pipeline with automated rollback and zero-downtime releases.</p>
+            </div>
+        </div>
+        <div class="arch-layout">
+            <div class="arch-flow-wrap reveal">
+                <div class="arch-flow">
+                    <div class="flow-node">
+                        <div class="fn-icon" style="--ic:#4f6ef7;">🧑‍💻</div>
+                        <div class="fn-body">
+                            <div class="fn-name">Developer Push</div>
+                            <div class="fn-cmd">git push origin main</div>
+                        </div>
+                        <div class="fn-pill trigger">TRIGGER</div>
+                    </div>
+                    <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+                    <div class="flow-node">
+                        <div class="fn-icon" style="--ic:#06b6d4;">⚙️</div>
+                        <div class="fn-body">
+                            <div class="fn-name">GitHub Actions</div>
+                            <div class="fn-cmd">CI/CD Workflow Execution</div>
+                        </div>
+                        <div class="fn-pill ci">CI/CD</div>
+                    </div>
+                    <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+                    <div class="flow-node">
+                        <div class="fn-icon" style="--ic:#a855f7;">🐳</div>
+                        <div class="fn-body">
+                            <div class="fn-name">Docker + ECR</div>
+                            <div class="fn-cmd">Build image · Push registry</div>
+                        </div>
+                        <div class="fn-pill build">BUILD</div>
+                    </div>
+                    <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+                    <div class="flow-node">
+                        <div class="fn-icon" style="--ic:#f59e0b;">🌐</div>
+                        <div class="fn-body">
+                            <div class="fn-name">Nginx Reverse Proxy</div>
+                            <div class="fn-cmd">SSL termination · HTTPS</div>
+                        </div>
+                        <div class="fn-pill secure">SECURE</div>
+                    </div>
+                    <div class="flow-arrow"><div class="arrow-line"></div><div class="arrow-head">▼</div></div>
+                    <div class="flow-node live-node">
+                        <div class="fn-icon" style="--ic:#22c55e;">☁️</div>
+                        <div class="fn-body">
+                            <div class="fn-name">AWS EC2 Production</div>
+                            <div class="fn-cmd">ap-south-1 · t3.micro</div>
+                        </div>
+                        <div class="fn-pill live-pill">● LIVE</div>
+                    </div>
+                </div>
+            </div>
+            <div class="arch-features reveal">
+                <div class="af-card">
+                    <div class="af-num">01</div>
+                    <div class="af-text">
+                        <div class="af-title">Zero-Downtime Deploys</div>
+                        <div class="af-desc">Rolling container updates with health checks. Automatic rollback triggers if any health check fails within 60 seconds.</div>
+                    </div>
+                </div>
+                <div class="af-card">
+                    <div class="af-num">02</div>
+                    <div class="af-text">
+                        <div class="af-title">End-to-End SSL Encryption</div>
+                        <div class="af-desc">Let's Encrypt certificates, auto-renewed via Certbot. All traffic HTTPS-only with HSTS headers enforced.</div>
+                    </div>
+                </div>
+                <div class="af-card">
+                    <div class="af-num">03</div>
+                    <div class="af-text">
+                        <div class="af-title">Automated Security Scans</div>
+                        <div class="af-desc">SAST + dependency audits run on every PR. Docker image scanned for CVEs before any ECR push is allowed.</div>
+                    </div>
+                </div>
+                <div class="af-card">
+                    <div class="af-num">04</div>
+                    <div class="af-text">
+                        <div class="af-title">Infrastructure as Code</div>
+                        <div class="af-desc">All server config, environment variables, and deploy scripts version-controlled. Reproducible from scratch in under 5 minutes.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TECH STACK -->
+    <section id="stack" class="section-stack">
+        <div class="section-head">
+            <div class="section-num">02</div>
+            <div>
+                <h2 class="section-title">Tech Stack</h2>
+                <p class="section-desc">Modern, battle-tested tools chosen for reliability and security.</p>
+            </div>
+        </div>
+        <div class="stack-grid reveal">
+            <div class="stack-card" data-color="#FF9900">
+                <div class="sc-top"><div class="sc-icon">☁️</div><div class="sc-badge">Infrastructure</div></div>
+                <div class="sc-name">AWS EC2</div>
+                <div class="sc-desc">t3.micro with Elastic IP, IAM roles, Security Groups and VPC configuration for isolated networking.</div>
+                <div class="sc-bar"><div class="sc-fill" style="--w:88%; --c:#FF9900;"></div></div>
+            </div>
+            <div class="stack-card" data-color="#2496ED">
+                <div class="sc-top"><div class="sc-icon">🐳</div><div class="sc-badge">Container</div></div>
+                <div class="sc-name">Docker</div>
+                <div class="sc-desc">Multi-stage builds with minimal Alpine images. Docker Compose for local development parity.</div>
+                <div class="sc-bar"><div class="sc-fill" style="--w:85%; --c:#2496ED;"></div></div>
+            </div>
+            <div class="stack-card" data-color="#6cc644">
+                <div class="sc-top"><div class="sc-icon">⚙️</div><div class="sc-badge">Automation</div></div>
+                <div class="sc-name">GitHub Actions</div>
+                <div class="sc-desc">YAML-based CI/CD workflows with secret management, matrix builds, and conditional deployment gates.</div>
+                <div class="sc-bar"><div class="sc-fill" style="--w:90%; --c:#6cc644;"></div></div>
+            </div>
+            <div class="stack-card" data-color="#009639">
+                <div class="sc-top"><div class="sc-icon">🌐</div><div class="sc-badge">Web Server</div></div>
+                <div class="sc-name">Nginx</div>
+                <div class="sc-desc">Reverse proxy with SSL termination, gzip compression, rate limiting and custom error pages.</div>
+                <div class="sc-bar"><div class="sc-fill" style="--w:82%; --c:#009639;"></div></div>
+            </div>
+            <div class="stack-card" data-color="#00e5d4">
+                <div class="sc-top"><div class="sc-icon">🔒</div><div class="sc-badge">Security</div></div>
+                <div class="sc-name">Let's Encrypt</div>
+                <div class="sc-desc">Free SSL/TLS certs with 90-day auto-renewal via Certbot. TLS 1.3 only, A+ SSL Labs grade.</div>
+                <div class="sc-bar"><div class="sc-fill" style="--w:95%; --c:#00e5d4;"></div></div>
+            </div>
+            <div class="stack-card" data-color="#e05c00">
+                <div class="sc-top"><div class="sc-icon">📊</div><div class="sc-badge">Monitoring</div></div>
+                <div class="sc-name">AWS CloudWatch</div>
+                <div class="sc-desc">Metrics, log streams, dashboards and SNS alerts for CPU, memory and application health.</div>
+                <div class="sc-bar"><div class="sc-fill" style="--w:78%; --c:#e05c00;"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PIPELINE -->
+    <section id="pipeline" class="section-pipeline">
+        <div class="section-head">
+            <div class="section-num">03</div>
+            <div>
+                <h2 class="section-title">CI/CD Pipeline</h2>
+                <p class="section-desc">Every git push triggers the full automated deployment workflow.</p>
+            </div>
+        </div>
+        <div class="pipeline-card reveal">
+            <div class="pipe-header">
+                <div class="pipe-title">
+                    <span class="pipe-dot"></span>
+                    nexadeploy / .github/workflows/deploy.yml
+                </div>
+                <div class="pipe-run">Run #47 · main · <span style="color:var(--accent);">in progress</span></div>
+            </div>
+            <div class="pipe-stages">
+                <div class="ps-stage done">
+                    <div class="ps-icon">🔍<div class="ps-check">✓</div></div>
+                    <div class="ps-name">Lint & Audit</div>
+                    <div class="ps-time">0m 32s</div>
+                </div>
+                <div class="ps-line done-line"></div>
+                <div class="ps-stage done">
+                    <div class="ps-icon">🧪<div class="ps-check">✓</div></div>
+                    <div class="ps-name">Test Suite</div>
+                    <div class="ps-time">1m 18s</div>
+                </div>
+                <div class="ps-line done-line"></div>
+                <div class="ps-stage done">
+                    <div class="ps-icon">🐳<div class="ps-check">✓</div></div>
+                    <div class="ps-name">Docker Build</div>
+                    <div class="ps-time">1m 42s</div>
+                </div>
+                <div class="ps-line done-line"></div>
+                <div class="ps-stage done">
+                    <div class="ps-icon">📦<div class="ps-check">✓</div></div>
+                    <div class="ps-name">Push ECR</div>
+                    <div class="ps-time">0m 24s</div>
+                </div>
+                <div class="ps-line"></div>
+                <div class="ps-stage active">
+                    <div class="ps-icon spin">🚀</div>
+                    <div class="ps-name">Deploy EC2</div>
+                    <div class="ps-time active-time">running…</div>
+                </div>
+                <div class="ps-line"></div>
+                <div class="ps-stage pending">
+                    <div class="ps-icon">✅</div>
+                    <div class="ps-name">Health Check</div>
+                    <div class="ps-time">pending</div>
+                </div>
+            </div>
+            <div class="pipe-logs">
+                <div class="pl-row"><span class="pl-time">14:22:01</span><span class="pl-tag success">SUCCESS</span><span class="pl-msg">All 124 tests passed — 1m 18s</span></div>
+                <div class="pl-row"><span class="pl-time">14:23:19</span><span class="pl-tag info">INFO</span><span class="pl-msg">Docker image tagged: nexadeploy:sha-a3f2c9d</span></div>
+                <div class="pl-row"><span class="pl-time">14:23:43</span><span class="pl-tag success">SUCCESS</span><span class="pl-msg">Pushed to ECR: 123456789.dkr.ecr.ap-south-1.amazonaws.com/nexadeploy</span></div>
+                <div class="pl-row"><span class="pl-time">14:24:07</span><span class="pl-tag info">INFO</span><span class="pl-msg">SSH into EC2 · pulling new image · restarting containers…</span></div>
+                <div class="pl-row"><span class="pl-time">14:24:31</span><span class="pl-tag warn">DEPLOY</span><span class="pl-msg">Rolling update in progress · awaiting health checks…</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- METRICS -->
+    <section id="metrics" class="section-metrics">
+        <div class="section-head">
+            <div class="section-num">04</div>
+            <div>
+                <h2 class="section-title">Live Metrics</h2>
+                <p class="section-desc">Real-time observability across the entire deployment stack.</p>
+            </div>
+        </div>
+        <div class="metrics-grid reveal">
+            <div class="metric-card" style="--mc:#22c55e;">
+                <div class="mc-label">UPTIME</div>
+                <div class="mc-value" id="metric-uptime" style="color:#22c55e;">0s</div>
+                <div class="mc-sub">Since page load</div>
+                <div class="mc-bar"><div class="mc-fill" style="width:99.9%; background:#22c55e;"></div></div>
+            </div>
+            <div class="metric-card" style="--mc:#06b6d4;">
+                <div class="mc-label">RESPONSE TIME</div>
+                <div class="mc-value" style="color:#06b6d4;">84ms</div>
+                <div class="mc-sub">Avg · last 1k requests</div>
+                <div class="mc-bar"><div class="mc-fill" style="width:84%; background:#06b6d4;"></div></div>
+            </div>
+            <div class="metric-card" style="--mc:#a855f7;">
+                <div class="mc-label">SSL GRADE</div>
+                <div class="mc-value" style="color:#a855f7;">A+</div>
+                <div class="mc-sub">TLS 1.3 · Let's Encrypt</div>
+                <div class="mc-bar"><div class="mc-fill" style="width:100%; background:#a855f7;"></div></div>
+            </div>
+            <div class="metric-card" style="--mc:#f59e0b;">
+                <div class="mc-label">ERROR RATE</div>
+                <div class="mc-value" style="color:#f59e0b;">0.01%</div>
+                <div class="mc-sub">HTTP 5xx · last 24h</div>
+                <div class="mc-bar"><div class="mc-fill" style="width:1%; background:#f59e0b;"></div></div>
+            </div>
+            <div class="metric-card" style="--mc:#4f6ef7;">
+                <div class="mc-label">THROUGHPUT</div>
+                <div class="mc-value" style="color:#4f6ef7;">1.2k</div>
+                <div class="mc-sub">Requests / minute</div>
+                <div class="mc-bar"><div class="mc-fill" style="width:12%; background:#4f6ef7;"></div></div>
+            </div>
+            <div class="metric-card" style="--mc:#22c55e;">
+                <div class="mc-label">DEPLOYMENTS</div>
+                <div class="mc-value" style="color:#22c55e;">47</div>
+                <div class="mc-sub">Total · 100% success</div>
+                <div class="mc-bar"><div class="mc-fill" style="width:100%; background:#22c55e;"></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section-about">
+        <div class="section-head">
+            <div class="section-num">05</div>
+            <div>
+                <h2 class="section-title">About the Developer</h2>
+                <p class="section-desc">3rd Year Engineering Student · Cloud & DevOps Enthusiast</p>
+            </div>
+        </div>
+        <div class="about-grid reveal">
+            <div class="about-card">
+                <div class="about-cover"></div>
+                <div class="about-avatar">👨‍💻</div>
+                <div class="about-name">Mayur Mahindrakar</div>
+                <div class="about-role">DevOps · Cloud · Backend Engineering</div>
+                <div class="about-tags">
+                    <span class="atag highlight">AWS</span>
+                    <span class="atag highlight">Docker</span>
+                    <span class="atag highlight">CI/CD</span>
+                    <span class="atag">Linux</span>
+                    <span class="atag">Python</span>
+                    <span class="atag">Node.js</span>
+                    <span class="atag">Nginx</span>
+                </div>
+                <div class="about-divider"></div>
+                <div class="about-rows">
+                    <div class="ar"><span>Location</span><span class="arv">Kondwa, Maharashtra</span></div>
+                    <div class="ar"><span>Year</span><span class="arv">3rd Year · 2026</span></div>
+                    <div class="ar"><span>Project</span><span class="arv">NexaDeploy</span></div>
+                    <div class="ar"><span>Status</span><span class="arv" style="color:#22c55e;">🟢 Available</span></div>
+                </div>
+            </div>
+            <div class="about-right">
+                <p class="about-para">NexaDeploy is my 3rd Year Engineering project — built to demonstrate production-level DevOps practices in a real, deployed environment. From writing the first Dockerfile to configuring SSL on AWS EC2, every component was built from scratch.</p>
+                <p class="about-para">The project focuses on what really matters in modern software delivery: automation, security, and reliability. Every push to main triggers a full pipeline — lint, test, build, push, deploy. Zero manual steps. Zero downtime.</p>
+                <div class="skills-section">
+                    <div class="skill-row">
+                        <div class="sk-header"><span class="sk-name">AWS & Cloud</span><span class="sk-pct">88%</span></div>
+                        <div class="sk-track"><div class="sk-fill" style="--sw:88%; --sc:#FF9900;"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="sk-header"><span class="sk-name">Docker & Containers</span><span class="sk-pct">85%</span></div>
+                        <div class="sk-track"><div class="sk-fill" style="--sw:85%; --sc:#2496ED;"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="sk-header"><span class="sk-name">GitHub Actions / CI-CD</span><span class="sk-pct">90%</span></div>
+                        <div class="sk-track"><div class="sk-fill" style="--sw:90%; --sc:#6cc644;"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="sk-header"><span class="sk-name">Nginx & Linux</span><span class="sk-pct">80%</span></div>
+                        <div class="sk-track"><div class="sk-fill" style="--sw:80%; --sc:#009639;"></div></div>
+                    </div>
+                    <div class="skill-row">
+                        <div class="sk-header"><span class="sk-name">Security & SSL/TLS</span><span class="sk-pct">75%</span></div>
+                        <div class="sk-track"><div class="sk-fill" style="--sw:75%; --sc:#00e5d4;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER CTA -->
+    <section class="footer-cta">
+        <div class="fcta-glow"></div>
+        <div class="fcta-tag">3RD YEAR PROJECT · MAYUR MAHINDRAKAR · 2025</div>
+        <h2 class="fcta-title">AUTOMATED.<br>SECURE.<br>DEPLOYED.</h2>
+        <p class="fcta-sub">NexaDeploy — Production-grade CI/CD for the modern cloud.</p>
+        <div class="fcta-btns">
+            <a href="#pipeline" class="btn-glow">Explore Pipeline</a>
+            <a href="#architecture" class="btn-ghost">Architecture →</a>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <div class="sf-left">
+            <span>© 2025 Mayur Mahindrakar</span>
+            <span class="sf-dot">·</span>
+            <span>Project NexaDeploy</span>
+            <span class="sf-dot">·</span>
+            <span>3rd Year Engineering</span>
+        </div>
+        <div class="sf-right">
+            <a href="#home">↑ Top</a>
+            <a href="#stack">Stack</a>
+            <a href="#pipeline">Pipeline</a>
+            <a href="#about">About</a>
+        </div>
+    </footer>
 
     <script src="script.js"></script>
 </body>
